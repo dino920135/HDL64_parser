@@ -474,23 +474,63 @@ namespace velodyne
                     // Convert to DataPacket Structure ( Cut Header 42 bytes )
                     // TODO: HDL-64 
                     const DataPacket* packet = reinterpret_cast<const DataPacket*>( data + 42 );
-                    // cout << hex << "firingData: " << &packet->firingData << endl;
-                    // cout << dec << "firingData Size: " << sizeof(packet->firingData) << endl;
-                    // cout << dec << "gpsTimestamp Size: " << sizeof(packet->gpsTimestamp) << " ";
 
                     // Status Type Rotation
                     // Hex   ASCII  String  Description
-                    // 47    71     G       GPS
-
-                    // GPS Status Values
-                    // Hex   ASCII  Description
-                    // 41    65     A = both "sync signal" and "NMEA time command record"
-                    // 56    86     V = "NMEA time command record" only
-                    // 50    80     P = "sync signal" only
-                    // 00    00     0 = GPS not connect
-                    if (packet->statusType == 0x47) // Status Type = G
+                    switch (packet->statusType)
                     {
-                        cout << packet->statusType << "\t" << packet->statusValue << "\t" << endl;
+                    // 48    72     H       Hours
+                    case 0x48:
+                        cout << "Hours" << "\t" << (int)packet->statusValue << endl;
+                        break;
+                    
+                    // 4D    77     M       Minutes
+                    case 0x4D:
+                        cout << "Minutes" << "\t" << (int)packet->statusValue << endl;
+                        break;
+                    
+                    // 53    83     S       Seconds
+                    case 0x53:
+                        cout << "Seconds" << "\t" << (int)packet->statusValue << endl;
+                        break;
+
+                    // 44    68     D       Date
+                    case 0x44:
+                        // Day of the Month
+                        cout << "Date" << "\t" << (int)packet->statusValue << endl;
+                        break;
+
+                    // 4E    78     N       Month
+                    case 0x4E:
+                        cout << "Month" << "\t" << (int)packet->statusValue << endl;
+                        break;
+
+                    // 59    89     Y       Years
+                    case 0x59:
+                        cout << "Years" << "\t20" << (int)packet->statusValue << endl;
+                        break;
+
+                    // 53    71     G       GPS
+                    case 0x47:
+                        // GPS Status Values
+                        // Hex   ASCII  Description
+                        // 41    65     A = both "sync signal" and "NMEA time command record"
+                        // 56    86     V = "NMEA time command record" only
+                        // 50    80     P = "sync signal" only
+                        // 00    00     0 = GPS not connect
+                        cout << "GPS" << "\t" << packet->statusValue << "\t" << endl;
+                        break;
+
+                    // 54    84     T       Temperature (degC)
+                    case 0x54:
+                        cout << "Temperature" << "\t" << (int)packet->statusValue << endl;
+                        break;
+
+                    // 56    86     V       Firmware Version
+                    // Fixme display uncorrect
+                    case 0x56:
+                        cout << "Version" << "\t" << hex << packet->statusValue << endl;
+                        break;
                     }
                     parseDataPacket(packet, lasers, last_azimuth);
                 }

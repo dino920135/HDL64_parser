@@ -3,7 +3,7 @@
 # --------------
 #
 # Find PCAP (or WinPCAP) include dirs, library dirs, libraries.
-#
+#                               
 # Use this module by invoking find_package with the form::
 #
 #    find_package( PCAP [REQUIRED] )
