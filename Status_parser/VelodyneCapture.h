@@ -65,6 +65,18 @@ namespace velodyne
         }
     };
 
+    struct status
+    {
+        int hour;
+        int minute;
+        int second;
+        int date;
+        int month;
+        int year;
+        char gps_status;
+        int temperature;
+    };
+
     class VelodyneCapture
     {
         protected:
@@ -120,6 +132,8 @@ namespace velodyne
                 uint8_t statusValue;
             };
             #pragma pack(pop)
+
+            status HDL_status;
 
         public:
             // Constructor
@@ -481,33 +495,39 @@ namespace velodyne
                     {
                     // 48    72     H       Hours
                     case 0x48:
-                        cout << "Hours" << "\t" << (int)packet->statusValue << endl;
+                        // cout << "Hours" << "\t" << (int)packet->statusValue << endl;
+                        HDL_status.hour = (int)packet->statusValue;
                         break;
                     
                     // 4D    77     M       Minutes
                     case 0x4D:
-                        cout << "Minutes" << "\t" << (int)packet->statusValue << endl;
+                        // cout << "Minutes" << "\t" << (int)packet->statusValue << endl;
+                        HDL_status.minute = (int)packet->statusValue;
                         break;
                     
                     // 53    83     S       Seconds
                     case 0x53:
-                        cout << "Seconds" << "\t" << (int)packet->statusValue << endl;
+                        // cout << "Seconds" << "\t" << (int)packet->statusValue << endl;
+                        HDL_status.second = (int)packet->statusValue;
                         break;
 
                     // 44    68     D       Date
                     case 0x44:
                         // Day of the Month
-                        cout << "Date" << "\t" << (int)packet->statusValue << endl;
+                        // cout << "Date" << "\t" << (int)packet->statusValue << endl;
+                        HDL_status.date = (int)packet->statusValue;
                         break;
 
                     // 4E    78     N       Month
                     case 0x4E:
-                        cout << "Month" << "\t" << (int)packet->statusValue << endl;
+                        // cout << "Month" << "\t" << (int)packet->statusValue << endl;
+                        HDL_status.month = (int)packet->statusValue;
                         break;
 
                     // 59    89     Y       Years
                     case 0x59:
-                        cout << "Years" << "\t20" << (int)packet->statusValue << endl;
+                        // cout << "Years" << "\t20" << (int)packet->statusValue << endl;
+                        HDL_status.year = 2000 + (int)packet->statusValue;
                         break;
 
                     // 53    71     G       GPS
@@ -518,20 +538,31 @@ namespace velodyne
                         // 56    86     V = "NMEA time command record" only
                         // 50    80     P = "sync signal" only
                         // 00    00     0 = GPS not connect
-                        cout << "GPS" << "\t" << packet->statusValue << "\t" << endl;
+                        // cout << "GPS" << "\t" << packet->statusValue << "\t" << endl;
+                        HDL_status.gps_status = (int)packet->statusValue;
                         break;
 
                     // 54    84     T       Temperature (degC)
                     case 0x54:
-                        cout << "Temperature" << "\t" << (int)packet->statusValue << endl;
+                        // cout << "Temperature" << "\t" << (int)packet->statusValue << endl;
+                        HDL_status.temperature = (int)packet->statusValue;
                         break;
 
                     // 56    86     V       Firmware Version
                     // Fixme display uncorrect
                     case 0x56:
-                        cout << "Version" << "\t" << hex << packet->statusValue << endl;
+                        // cout << "Version" << "\t" << hex << packet->statusValue << endl;
                         break;
                     }
+                    
+                    cout << HDL_status.year << "/";
+                    cout << setw(2) << setfill('0');
+                    cout << HDL_status.month << "/" ;
+                    cout << setw(2) << setfill('0') << HDL_status.date << " ";
+                    cout << setw(2) << setfill('0') << HDL_status.hour << ":" ;
+                    cout << setw(2) << setfill('0') << HDL_status.minute << ":";
+                    cout << setw(2) << setfill('0') << HDL_status.second << "\t";
+                    cout << HDL_status.gps_status << "\t" << HDL_status.temperature << "°C" << endl;
                     parseDataPacket(packet, lasers, last_azimuth);
                 }
                 run = false;

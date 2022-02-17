@@ -16,9 +16,10 @@ int main( int argc, char* argv[] )
 
     
     // Open VelodyneCapture that retrieve from PCAP
-    const std::string &filename = "/home/pointlab/Desktop/HDL64/20211124/2021-11-24-12-41-24_Velodyne-HDL-64-Data.pcap";
+    const std::string &filename = "/home/pointlab/TS/HDL64_parser/data/走馬瀨64線光達資料/Tzichiang/2022-01-21-15-43-43_Velodyne-HDL-64-Data-007.pcap";
     // velodyne::HDL32ECapture capture;
     velodyne::HDL32ECapture capture( filename );
+    // velodyne::status HDL_status;
     
 
     if( !capture.isOpen() ){
