@@ -22,3 +22,13 @@ GPS Status Values which shows the GPS sync status.
 | 56  |  86   | V = "NMEA time command record" only     |
 | 50  |  80   | P = "sync signal" only     |
 | 00  |  00   | 0 = GPS not connect     |
+
+Command
+----------------------------------------------
+
+`./status_parser -[option] [info]`
+
+Example:
+
+- Ethernet `./status_parser -ip 192.168.1.21`
+- .pcap `./status_parser -pcap 2021-11-24-11-15-39_Velodyne-HDL-64-Data.pcap`
