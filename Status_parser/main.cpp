@@ -6,25 +6,19 @@
 // Include VelodyneCapture Header
 #include "VelodyneCapture.h"
 
-int main( int argc, char* argv[] )
+// ./status_parser [option] [ip / file name]
+// option : -ip, -pcap
+// ip / file name :  192.168.1.21, 2021-11-24-11-15-39_Velodyne-HDL-64-Data.pcap
+int start_capture(velodyne::HDL32ECapture &capture)
 {
-    // Open VelodyneCapture that retrieve from Sensor
-    // const boost::asio::ip::address address = boost::asio::ip::address::from_string( "192.168.1.21" );
-    // const unsigned short port = 2368;
-    // velodyne::VLP16Capture capture( address, port );
-    //velodyne::HDL32ECapture capture( address, port );
-
-    
-    // Open VelodyneCapture that retrieve from PCAP
-    const std::string &filename = "/home/pointlab/TS/HDL64_parser/data/走馬瀨64線光達資料/Tzichiang/2022-01-21-15-43-43_Velodyne-HDL-64-Data-007.pcap";
-    // velodyne::HDL32ECapture capture;
-    velodyne::HDL32ECapture capture( filename );
-    // velodyne::status HDL_status;
-    
 
     if( !capture.isOpen() ){
         std::cerr << "Can't open VelodyneCapture." << std::endl;
         return -1;
+    }
+    else
+    {
+        cout << "Open VelodyneCapture." << endl;
     }
 
     while( capture.isRun() ){
@@ -77,5 +71,56 @@ int main( int argc, char* argv[] )
         // }
     }
 
+    return 0;
+}
+
+int main( int argc, char* argv[] )
+{
+    
+    if (argc < 1)
+    {
+        cout << "Default: " << "192.168.1.21" << endl;
+        // Use default
+        const boost::asio::ip::address address = boost::asio::ip::address::from_string( "192.168.1.21" );
+        const unsigned short port = 2368;
+        // velodyne::VLP16Capture capture( address, port );
+        velodyne::HDL32ECapture capture( address, port );
+        start_capture(capture);
+    }
+    else
+    {
+        cout << argv[1] << endl;
+        if (string(argv[1]) == "-ip")
+        {
+            cout << "ip: " << argv[2] << endl;
+            // Open VelodyneCapture that retrieve from Sensor
+            const boost::asio::ip::address address = boost::asio::ip::address::from_string( argv[2] );
+            const unsigned short port = 2368;
+            // velodyne::VLP16Capture capture( address, port );
+            velodyne::HDL32ECapture capture( address, port );
+            start_capture(capture);
+        }
+        else if (string(argv[1]) == "-pcap")
+        {
+            cout << "pcap file: " << argv[2] << endl;
+            // Open VelodyneCapture that retrieve from PCAP
+            const std::string &filename = "/home/pointlab/TS/HDL64_parser/data/2021-11-24-11-15-39_Velodyne-HDL-64-Data.pcap"; //argv[2];
+            // velodyne::HDL32ECapture capture;
+            velodyne::HDL32ECapture capture( filename );
+            start_capture(capture);
+        }
+        else
+        {
+            cout << "Default: " << "192.168.1.21" << endl;
+            // Use default
+            const boost::asio::ip::address address = boost::asio::ip::address::from_string( "192.168.1.21" );
+            const unsigned short port = 2368;
+            // velodyne::VLP16Capture capture( address, port );
+            velodyne::HDL32ECapture capture( address, port );
+            start_capture(capture);
+        }
+    }
+
+    
     return 0;
 }
